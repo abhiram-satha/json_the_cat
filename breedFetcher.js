@@ -1,18 +1,28 @@
 const request = require('request');
 
-const catSearch = process.argv.slice(2);
-let catApiKey = `https://api.thecatapi.com/v1/breeds/search?q=${catSearch}`;
-//console.log(catApiKey);
 
-request(catApiKey, (error, response, body) => {
-  
-  //console.log('error', error);
-  //console.log('statusCode:', response & response.statusCode);
-  
-  const data = JSON.parse(body);
-  if (data.length === 0) {
-    return console.log(`Please try again, the ${catSearch} breed of cat does not exist.`);
-  }
-  console.log(data['0']['description']);
+const fetchBreedDescription = function(catBreed, callback) {
 
-});
+  let catApiKey = `https://api.thecatapi.com/v1/breeds/search?q=${catBreed}`;
+  request(catApiKey, (error, response, body) => {
+    const data = JSON.parse(body);
+
+    if (data.length === 0) {
+      return callback([], null);
+    } else {
+      return callback(null, data['0']['description']);
+    }
+  
+  });
+};
+
+
+
+
+
+
+
+
+module.exports = {
+  fetchBreedDescription,
+};
